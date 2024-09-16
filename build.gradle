@@ -88,7 +88,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$versions.gradle"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$versions.dokka"
+//        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$versions.dokka"
         classpath "digital.wup:android-maven-publish:$versions.mavenPublish"
         classpath "androidx.benchmark:benchmark-gradle-plugin:$versions.androidBenchmark"
 
@@ -159,7 +159,7 @@ subprojects {
     if (isRegular) {
         apply plugin: 'com.android.library'
         apply plugin: 'digital.wup.android-maven-publish'
-        apply plugin: 'org.jetbrains.dokka'
+//        apply plugin: 'org.jetbrains.dokka'
         apply plugin: 'signing'
         apply plugin: 'maven-publish'
     } else if (isTest) {
@@ -206,10 +206,10 @@ subprojects {
             classifier = 'sources'
         }
 
-        task javadocJar(type: Jar, dependsOn: 'dokka') {
-            from("$buildDir/javadoc")
-            classifier = 'javadoc'
-        }
+//        task javadocJar(type: Jar, dependsOn: 'dokka') {
+//            from("$buildDir/javadoc")
+//            classifier = 'javadoc'
+//        }
 
         def authentication_username = getGradleOrSystemProperty('authentication_username', project)
         def authentication_password = getGradleOrSystemProperty('authentication_password', project)
@@ -217,7 +217,7 @@ subprojects {
         publishing {
             publications {
                 mavenJava(MavenPublication) {
-                    artifact javadocJar
+//                    artifact javadocJar
                     artifact sourcesJar
                     from components.android
 
@@ -272,11 +272,11 @@ subprojects {
             sign publishing.publications.mavenJava
         }
 
-        dokka {
-            outputFormat = 'html'
-            outputDirectory = "$buildDir/javadoc"
-            reportUndocumented = false
-        }
+//        dokka {
+//            outputFormat = 'html'
+//            outputDirectory = "$buildDir/javadoc"
+//            reportUndocumented = false
+//        }
     }
 }
 
