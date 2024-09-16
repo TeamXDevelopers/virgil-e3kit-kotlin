@@ -160,7 +160,7 @@ subprojects {
         apply plugin: 'com.android.library'
         apply plugin: 'digital.wup.android-maven-publish'
 //        apply plugin: 'org.jetbrains.dokka'
-        apply plugin: 'signing'
+//        apply plugin: 'signing'
         apply plugin: 'maven-publish'
     } else if (isTest) {
         apply plugin: 'com.android.application'
@@ -268,9 +268,9 @@ subprojects {
             }
         }
 
-        signing {
-            sign publishing.publications.mavenJava
-        }
+//        signing {
+//            sign publishing.publications.mavenJava
+//        }
 
 //        dokka {
 //            outputFormat = 'html'
