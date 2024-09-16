@@ -46,7 +46,7 @@ buildscript {
             coroutines      : '1.3.3',
 
             // Gradle
-            gradle          : '4.2.0',
+            gradle          : '7.1.2',
 
             // Maven
             mavenPublish    : '3.6.2',
