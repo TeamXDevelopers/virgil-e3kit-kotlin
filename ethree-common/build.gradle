@@ -1,0 +1,149 @@
+/*
+ * Copyright (c) 2015-2020, Virgil Security, Inc.
+ *
+ * Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *     (1) Redistributions of source code must retain the above copyright notice, this
+ *     list of conditions and the following disclaimer.
+ *
+ *     (2) Redistributions in binary form must reproduce the above copyright notice,
+ *     this list of conditions and the following disclaimer in the documentation
+ *     and/or other materials provided with the distribution.
+ *
+ *     (3) Neither the name of virgil nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+android {
+    defaultConfig {
+        minSdkVersion androidOptions.minSdkVersionRegular
+        consumerProguardFiles 'proguard-rules.txt'
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"]
+            }
+        }
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    configurations {
+        configureEach { // You should exclude one of them not both of them
+            exclude group: "com.virgilsecurity.crypto", module: "common"
+            exclude group: "com.virgilsecurity.crypto", module: "common-android"
+            exclude group: "com.virgilsecurity.crypto", module: "foundation-android"
+        }
+    }
+}
+
+dependencies {
+    // Kotlin
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
+
+    // Virgil SDK
+    api "com.virgilsecurity.sdk:sdk-android:$versions.virgilSdk"
+    api "com.virgilsecurity.sdk:crypto-android:$versions.virgilSdk"
+
+    // Virgil Pythia
+//    api "com.virgilsecurity:pythia-android:$versions.pythia"
+//    api "com.virgilsecurity.crypto:pythia-android:$versions.virgilCrypto"
+    api 'com.github.TeamXDevelopers.virgil-pythia-java:pythia-android:v1.0.0-fix'
+    api 'com.github.TeamXDevelopers.virgil-pythia-java:pythia:v1.0.0-fix'
+
+    // Virgil Ratchet
+    api "com.virgilsecurity:ratchet-android:$versions.ratchet"
+
+    // Android
+    compileOnly "com.google.android:android:$versions.android"
+
+    // Room
+    implementation "androidx.room:room-runtime:$versions.room"
+    implementation "androidx.room:room-ktx:$versions.room"
+    kapt "androidx.room:room-compiler:$versions.room"
+
+    // Gson
+    implementation "com.google.code.gson:gson:$versions.gson"
+
+    // Tests core
+    testImplementation "junit:junit:$versions.junit"
+    androidTestImplementation "androidx.test.ext:junit:$versions.testsRunner"
+    androidTestImplementation "androidx.test:runner:$versions.testsRunner"
+
+    // Test internal
+    androidTestImplementation project(':ethree-kotlin')
+
+    // Virgil test common
+    implementation "com.virgilsecurity:test-common:$versions.virgilTestCommon"
+}
+
+task generateVirgilInfo {
+    outputs.dir "$buildDir/generated"
+    doFirst {
+        def versionFile = file("$buildDir/generated/release/com/virgilsecurity/android/common/build/VirgilInfo.kt")
+        versionFile.parentFile.mkdirs()
+        versionFile.text =
+                """
+package com.virgilsecurity.android.common.build;
+
+object VirgilInfo {
+    const val VERSION = "$project.version"
+}
+"""
+    }
+}
+
+project.android.sourceSets.main.java.srcDirs = ["${buildDir}/generated/release/", "src/main/java"]
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    dependsOn(generateVirgilInfo)
+    dependsOn(copyEnvFile)
+    dependsOn(copyCompatDataFile)
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'ethree-common'
+            pom {
+                name = 'Virgil E3Kit Kotlin Common'
+            }
+        }
+    }
+}
+
+task copyEnvFile(type: Copy) {
+    def resourcesFolder = new File(project.projectDir.absolutePath + '/src/androidTest/resources/testProperties')
+    if (!resourcesFolder.exists()) resourcesFolder.mkdirs()
+
+    from rootProject.projectDir.absolutePath + '/env.json'
+    into resourcesFolder.absolutePath
+}
+
+task copyCompatDataFile(type: Copy) {
+    def resourcesFolder = new File(project.projectDir.absolutePath + '/src/androidTest/resources/compat')
+    if (!resourcesFolder.exists()) resourcesFolder.mkdirs()
+
+    from rootProject.projectDir.absolutePath + '/compat_data.json'
+    into resourcesFolder.absolutePath
+}
