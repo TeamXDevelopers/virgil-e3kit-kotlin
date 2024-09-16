@@ -59,7 +59,7 @@ buildscript {
             room            : '2.2.3',
 
             // Docs
-            dokka           : '0.9.18',
+//            dokka           : '0.9.18',
 
             // Tests
             junit           : '4.12',
