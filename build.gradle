@@ -112,33 +112,33 @@ allprojects {
  *
  * @return System property or null if not found.
  */
-def static getSystemProperty(String name) {
-    def property
-    if (System.getProperty(name) != null) {
-        property = System.getProperty(name)
-    } else {
-        property = System.getenv(name)
-    }
-
-    return property
-}
+//def static getSystemProperty(String name) {
+//    def property
+//    if (System.getProperty(name) != null) {
+//        property = System.getProperty(name)
+//    } else {
+//        property = System.getenv(name)
+//    }
+//
+//    return property
+//}
 
 /**
  * Gets property from both - gradle properties and system properties.
  *
  * @param name Of property to get.
  */
-def getGradleOrSystemProperty(String name, Project project) {
-    def property
-
-    if (project.hasProperty(name)) {
-        property = project.getProperty(name)
-    } else {
-        property = getSystemProperty(name)
-    }
-
-    return property
-}
+//def getGradleOrSystemProperty(String name, Project project) {
+//    def property
+//
+//    if (project.hasProperty(name)) {
+//        property = project.getProperty(name)
+//    } else {
+//        property = getSystemProperty(name)
+//    }
+//
+//    return property
+//}
 
 // Artifacts packages
 final String BASE_VIRGIL_PACKAGE = 'com.virgilsecurity'
@@ -200,73 +200,73 @@ subprojects {
     sourceCompatibility = "8"
     targetCompatibility = "8"
 
-    if (isRegular) {
-        task sourcesJar(type: Jar) {
-            from(project.android.sourceSets.main.java.srcDirs)
-            classifier = 'sources'
-        }
-
-//        task javadocJar(type: Jar, dependsOn: 'dokka') {
-//            from("$buildDir/javadoc")
-//            classifier = 'javadoc'
+//    if (isRegular) {
+//        task sourcesJar(type: Jar) {
+//            from(project.android.sourceSets.main.java.srcDirs)
+//            classifier = 'sources'
 //        }
-
-        def authentication_username = getGradleOrSystemProperty('authentication_username', project)
-        def authentication_password = getGradleOrSystemProperty('authentication_password', project)
-
-        publishing {
-            publications {
-                mavenJava(MavenPublication) {
-//                    artifact javadocJar
-                    artifact sourcesJar
-                    from components.android
-
-                    pom {
-                        description = 'Virgil Security provides an SDK which symplifies work with Virgil services and presents easy to use API for adding security to any application. In a few simple steps you can setup user encryption with multidevice support.'
-                        url = 'https://www.virgilsecurity.com/'
-                        licenses {
-                            license {
-                                name = 'Virgil Security, Inc. license'
-                                url = 'https://github.com/VirgilSecurity/virgil-e3kit-kotlin/blob/master/LICENSE.txt'
-                            }
-                        }
-                        developers {
-                            developer {
-                                id = 'BuddahLD'
-                                name = 'Danylo Oliinyk'
-                                email = 'doliinyk@virgilsecurity.com'
-                                organizationUrl = 'https://github.com/BuddahLD'
-                            }
-                            developer {
-                                id = 'andrii-iakovenko'
-                                name = 'Andrii Iakovenko'
-                                email = 'andrii-iakovenko@gmail.com'
-                                organizationUrl = 'https://github.com/andrii-iakovenko'
-                            }
-                        }
-                        scm {
-                            connection = 'scm:git:https://github.com/VirgilSecurity/virgil-e3kit-kotlin.git'
-                            developerConnection = 'scm:git:git@github.com:VirgilSecurity/virgil-e3kit-kotlin.git'
-                            url = 'https://github.com/VirgilSecurity/virgil-e3kit-kotlin'
-                        }
-                    }
-                }
-            }
-
-            repositories {
-                maven {
-                    def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-                    def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
-                    url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-                    credentials {
-                        username "${authentication_username}"
-                        password "${authentication_password}"
-                    }
-                }
-                maven { url 'https://jitpack.io' }
-
-            }
-        }
+//
+////        task javadocJar(type: Jar, dependsOn: 'dokka') {
+////            from("$buildDir/javadoc")
+////            classifier = 'javadoc'
+////        }
+//
+//        def authentication_username = getGradleOrSystemProperty('authentication_username', project)
+//        def authentication_password = getGradleOrSystemProperty('authentication_password', project)
+//
+//        publishing {
+//            publications {
+//                mavenJava(MavenPublication) {
+////                    artifact javadocJar
+//                    artifact sourcesJar
+//                    from components.android
+//
+//                    pom {
+//                        description = 'Virgil Security provides an SDK which symplifies work with Virgil services and presents easy to use API for adding security to any application. In a few simple steps you can setup user encryption with multidevice support.'
+//                        url = 'https://www.virgilsecurity.com/'
+//                        licenses {
+//                            license {
+//                                name = 'Virgil Security, Inc. license'
+//                                url = 'https://github.com/VirgilSecurity/virgil-e3kit-kotlin/blob/master/LICENSE.txt'
+//                            }
+//                        }
+//                        developers {
+//                            developer {
+//                                id = 'BuddahLD'
+//                                name = 'Danylo Oliinyk'
+//                                email = 'doliinyk@virgilsecurity.com'
+//                                organizationUrl = 'https://github.com/BuddahLD'
+//                            }
+//                            developer {
+//                                id = 'andrii-iakovenko'
+//                                name = 'Andrii Iakovenko'
+//                                email = 'andrii-iakovenko@gmail.com'
+//                                organizationUrl = 'https://github.com/andrii-iakovenko'
+//                            }
+//                        }
+//                        scm {
+//                            connection = 'scm:git:https://github.com/VirgilSecurity/virgil-e3kit-kotlin.git'
+//                            developerConnection = 'scm:git:git@github.com:VirgilSecurity/virgil-e3kit-kotlin.git'
+//                            url = 'https://github.com/VirgilSecurity/virgil-e3kit-kotlin'
+//                        }
+//                    }
+//                }
+//            }
+//
+//            repositories {
+//                maven {
+//                    def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+//                    def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+//                    url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+//                    credentials {
+//                        username "${authentication_username}"
+//                        password "${authentication_password}"
+//                    }
+//                }
+//                maven { url 'https://jitpack.io' }
+//
+//            }
+//        }
 
 //        signing {
 //            sign publishing.publications.mavenJava
@@ -277,7 +277,7 @@ subprojects {
 //            outputDirectory = "$buildDir/javadoc"
 //            reportUndocumented = false
 //        }
-    }
+//    }
 }
 
 task clean(type: Delete) {
