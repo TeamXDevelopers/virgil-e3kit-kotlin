@@ -50,7 +50,7 @@ android {
     configurations {
         configureEach { // You should exclude one of them not both of them
             exclude group: "com.virgilsecurity.crypto", module: "common"
-            exclude group: "com.virgilsecurity.crypto", module: "common-android"
+//            exclude group: "com.virgilsecurity.crypto", module: "common-android"
             exclude group: "com.virgilsecurity.crypto", module: "foundation-android"
         }
     }
